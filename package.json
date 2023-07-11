@@ -1,5 +1,5 @@
 {
-	"name": "@codefastly/typescript-react-library-template",
+	"name": "@codefastly/react-carousel",
 	"author": "codefastly",
 	"license": "MIT",
 	"version": "1.0.0",
@@ -7,8 +7,8 @@
 	"files": [
 		"dist"
 	],
-	"main": "./dist/my-component.umd.cjs",
-	"module": "./dist/my-component.js",
+	"main": "./dist/react-carousel.umd.cjs",
+	"module": "./dist/react-carousel.js",
 	"types": "./dist/index.d.ts",
 	"peerDependencies": {
 		"react": "^18.2.0",
@@ -16,8 +16,6 @@
 	},
 	"scripts": {
 		"build": "vite build",
-		"test": "jest",
-		"test:watch": "jest --watch",
 		"lint": "eslint --ignore-path .gitignore . && stylelint **/*.scss",
 		"lint:fix": "eslint --fix --ignore-path .gitignore . && stylelint --fix **/*.scss",
 		"docs": "storybook dev -p 6006",
