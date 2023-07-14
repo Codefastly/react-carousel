@@ -4,9 +4,9 @@ import { useRef } from "react";
 
 import { ArrowLeft } from "./ArrowLeft";
 import { ArrowRight } from "./ArrowRight";
-import { scrollSliderNext, scrollSliderPrev } from "./core/scroll";
+import { scrollSliderNext, scrollSliderPrevious } from "./core/scroll";
 
-interface CarouselProps {
+export interface CarouselProps {
 	children: JSX.Element[];
 	prevAriaLabel?: string;
 	nextAriaLabel?: string;
@@ -40,7 +40,7 @@ export const Carousel: React.FC<CarouselProps> = ({
 	const scrollPrev = () => {
 		const slider = getSliderOrThrow();
 
-		scrollSliderPrev(slider);
+		scrollSliderPrevious(slider);
 	};
 
 	return (

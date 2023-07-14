@@ -6,13 +6,13 @@
       "dom.iterable",
       "esnext"
     ],
+    "downlevelIteration": true,
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-		"downlevelIteration": true,
     "noFallthroughCasesInSwitch": true,
     "module": "esnext",
     "moduleResolution": "node",
@@ -23,6 +23,7 @@
   },
   "include": [
     "src",
+    "tests/**/*.ts",
     "cypress.config.ts",
     "vite.config.ts"
   ]

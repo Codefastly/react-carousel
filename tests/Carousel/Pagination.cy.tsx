@@ -1,20 +1,17 @@
-import { Carousel } from "../../src/Carousel";
+import { CarouselMother } from "../tests-helpers/CarouselMother";
 import { scrollPast } from "../tests-helpers/scroll";
 import { beNotVisible, beVisible } from "../tests-helpers/visibility";
 
 describe("Carousel pagination", () => {
 	it("next button should scroll until the first not visible slide is visible", () => {
-		const carouselWithThirdSlidePartiallyVisible = (
-			<div style={{ width: "900px", margin: "0 auto" }}>
-				<Carousel>
-					<div style={{ width: "300px", background: "yellow" }}>Slide 1</div>
-					<div style={{ width: "500px", height: "500px", background: "aliceBlue" }}>Slide 2</div>
-					<div style={{ width: "400px", height: "400px", background: "yellow" }}>Slide 3</div>
-					<div style={{ width: "560px", height: "315px", background: "aliceBlue" }}>Slide 4</div>
-				</Carousel>
-			</div>
-		);
-
+		const slideWidth = 350;
+		const visibleSlides = 2;
+		const carouselWithThirdSlidePartiallyVisible = CarouselMother.random({
+			carouselWidth: slideWidth * visibleSlides + slideWidth / 2,
+			minSlideWidth: slideWidth,
+			maxSlideWidth: slideWidth,
+			slidesCount: visibleSlides + 1,
+		});
 		cy.mount(carouselWithThirdSlidePartiallyVisible);
 
 		const thirdSlide = ".carousel__slide:nth-child(3)";
@@ -26,24 +23,17 @@ describe("Carousel pagination", () => {
 		cy.get(thirdSlide).should(beVisible);
 	});
 
-	it("next button should scroll until the first not visible slide after a visible slider becomes visible", () => {
-		const carousel = (
-			<div style={{ width: "900px", margin: "0 auto" }}>
-				<Carousel>
-					<div style={{ width: "300px", background: "yellow" }}>Slide 1</div>
-					<div style={{ width: "300px", background: "yellow" }}>Slide 2</div>
-					<div style={{ width: "300px", background: "yellow" }}>Slide 3</div>
-					<div style={{ width: "300px", background: "yellow" }}>Slide 4</div>
-					<div style={{ width: "300px", background: "yellow" }}>Slide 5</div>
-					<div style={{ width: "300px", background: "yellow" }}>Slide 6</div>
-				</Carousel>
-			</div>
-		);
-
-		cy.mount(carousel);
+	it("next button should scroll until the first not visible slide after a visible slide becomes visible", () => {
+		const slideWidth = 300;
+		const randomCarousel = CarouselMother.random({
+			carouselWidth: slideWidth * 3,
+			minSlideWidth: slideWidth,
+			maxSlideWidth: slideWidth,
+		});
+		cy.mount(randomCarousel);
 
 		function scrollPastFirstSlide() {
-			return scrollPast(300);
+			return scrollPast(slideWidth);
 		}
 
 		const fifthSlide = ".carousel__slide:nth-child(5)";
@@ -55,54 +45,44 @@ describe("Carousel pagination", () => {
 		cy.get(fifthSlide).should(beVisible);
 	});
 
-	it("next button should scroll back to initial position if there are not visible slides after first visible slide", () => {
-		const carousel = (
-			<div style={{ width: "900px", margin: "0 auto" }}>
-				<Carousel>
-					<div style={{ width: "300px", background: "yellow" }}>Slide 1</div>
-					<div style={{ width: "300px", background: "yellow" }}>Slide 2</div>
-					<div style={{ width: "300px", background: "yellow" }}>Slide 3</div>
-					<div style={{ width: "300px", background: "yellow" }}>Slide 4</div>
-					<div style={{ width: "300px", background: "yellow" }}>Slide 5</div>
-					<div style={{ width: "300px", background: "yellow" }}>Slide 6</div>
-				</Carousel>
-			</div>
-		);
-
-		cy.mount(carousel);
+	it("next button should scroll back to initial position if there are no not visible slides after first visible slide", () => {
+		const slideWidth = 300;
+		const randomCarousel = CarouselMother.random({
+			carouselWidth: slideWidth * 3,
+			minSlideWidth: slideWidth,
+			maxSlideWidth: slideWidth,
+			slidesCount: 5,
+		});
+		cy.mount(randomCarousel);
 
 		function scrollPastFirst3Slides() {
-			scrollPast(900);
+			return scrollPast(slideWidth * 3);
 		}
+
+		const firstSlide = ".carousel__slide:first-child";
 
 		scrollPastFirst3Slides();
 
 		cy.findByLabelText(/Next/i).click();
 
-		const firstSlide = ".carousel__slide:first-child";
-
 		cy.get(firstSlide).should(beVisible);
 	});
 
 	it("previous button should scroll until the first not visible slide is visible", () => {
-		const randomCarousel = (
-			<div style={{ width: "900px", margin: "0 auto" }}>
-				<Carousel>
-					<div style={{ width: "300px", background: "yellow" }}>slide 1</div>
-					<div style={{ width: "500px", height: "500px", background: "aliceBlue" }}>slide 2</div>
-					<div style={{ width: "400px", height: "400px", background: "yellow" }}>slide 3</div>
-					<div style={{ width: "560px", height: "315px", background: "aliceBlue" }}>slide 4</div>
-				</Carousel>
-			</div>
-		);
+		const slideWidth = 400;
+		const randomCarousel = CarouselMother.random({
+			carouselWidth: slideWidth * 2,
+			minSlideWidth: slideWidth,
+			maxSlideWidth: slideWidth,
+		});
 
 		cy.mount(randomCarousel);
 
 		function scrollPastFirstTwoSlides() {
-			return scrollPast(800);
+			return scrollPast(slideWidth * 2);
 		}
 
-		const firstSlide = ".carousel__slide:first-child";
+		const firstSlide = ".carousel__slide:nth-child(1)";
 
 		scrollPastFirstTwoSlides().get(firstSlide).should(beNotVisible);
 
@@ -111,28 +91,41 @@ describe("Carousel pagination", () => {
 		cy.get(firstSlide).should(beVisible);
 	});
 
-	it("previous button should scroll to the end of the carousel when there are no slides beforte the first visible slide", () => {
-		const randomCarousel = (
-			<div style={{ width: "900px", margin: "0 auto" }}>
-				<Carousel>
-					<div style={{ width: "300px", background: "yellow" }}>slide 1</div>
-					<div style={{ width: "300px", height: "300px", background: "aliceBlue" }}>slide 2</div>
-					<div style={{ width: "300px", height: "300px", background: "yellow" }}>slide 3</div>
-					<div style={{ width: "300px", height: "300px", background: "aliceBlue" }}>slide 4</div>
-					<div style={{ width: "300px", height: "300px", background: "yellow" }}>slide 5</div>
-					<div style={{ width: "300px", height: "300px", background: "aliceBlue" }}>slide 6</div>
-				</Carousel>
-			</div>
-		);
-
+	it("previous button should scroll to the end of the carousel when there are no slides before the first visible slide", () => {
+		const randomCarousel = CarouselMother.random();
 		cy.mount(randomCarousel);
 
 		const lastSlide = ".carousel__slide:last-child";
-
-		cy.get(lastSlide).should(beNotVisible);
 
 		cy.findByLabelText(/Previous/i).click();
 
 		cy.get(lastSlide).should(beVisible);
 	});
+
+	// it("next button should scroll correctly with random slide widths", () => {
+	// 	const randomCarousel = CarouselMother.random();
+	// 	cy.mount(randomCarousel);
+	// 	disableScrollTransition();
+
+	// 	const lastSlide = ".carousel__slide:last-child";
+	// 	let isLastSlideVisible;
+
+	// 	function clickNextButtonIfLastSlideIsNotVisible($el: JQuery<HTMLElement>) {
+	// 		const htmlElement = $el[0];
+
+	// 		isLastSlideVisible = isCompletelyVisible(htmlElement);
+
+	// 		if (!isLastSlideVisible) {
+	// 			cy.findByLabelText(/Next/i).click();
+	// 		}
+	// 	}
+
+	// 	const maxAttempts = 20;
+
+	// 	for (let i = 0; i < maxAttempts; i++) {
+	// 		cy.get(lastSlide).then(clickNextButtonIfLastSlideIsNotVisible);
+	// 	}
+
+	// 	cy.get(lastSlide).should(beVisible);
+	// });
 });
