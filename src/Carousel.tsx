@@ -1,7 +1,10 @@
 import "./Carousel.scss";
 
+import { useRef } from "react";
+
 import { ArrowLeft } from "./ArrowLeft";
 import { ArrowRight } from "./ArrowRight";
+import { scrollSliderNext, scrollSliderPrev } from "./core/scroll";
 
 interface CarouselProps {
 	children: JSX.Element[];
@@ -18,9 +21,31 @@ export const Carousel: React.FC<CarouselProps> = ({
 	nextButtonContent = <ArrowRight />,
 	prevButtonContent = <ArrowLeft />,
 }) => {
+	const sliderRef = useRef<HTMLDivElement>(null);
+
+	const getSliderOrThrow = (): HTMLDivElement => {
+		if (!sliderRef.current) {
+			throw new Error("Slider not found");
+		}
+
+		return sliderRef.current;
+	};
+
+	const scrollNext = () => {
+		const slider = getSliderOrThrow();
+
+		scrollSliderNext(slider);
+	};
+
+	const scrollPrev = () => {
+		const slider = getSliderOrThrow();
+
+		scrollSliderPrev(slider);
+	};
+
 	return (
 		<div className="carousel">
-			<div className="carousel__slider">
+			<div ref={sliderRef} className="carousel__slider">
 				{children.map((child, index) => (
 					<div key={index} className="carousel__slide">
 						{child}
@@ -28,10 +53,10 @@ export const Carousel: React.FC<CarouselProps> = ({
 				))}
 			</div>
 			<div className="carousel__nav">
-				<button className="carousel__button" aria-label={prevAriaLabel}>
+				<button onClick={scrollPrev} className="carousel__button" aria-label={prevAriaLabel}>
 					{prevButtonContent}
 				</button>
-				<button className="carousel__button" aria-label={nextAriaLabel}>
+				<button onClick={scrollNext} className="carousel__button" aria-label={nextAriaLabel}>
 					{nextButtonContent}
 				</button>
 			</div>
