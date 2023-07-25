@@ -4,7 +4,6 @@
 	"license": "MIT",
 	"version": "1.0.1",
 	"type": "module",
-	"private": "false",
 	"files": [
 		"dist"
 	],
